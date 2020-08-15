@@ -1,0 +1,14 @@
+/* add css module styles here (optional) */
+
+.wrap {
+  position: fixed;
+  border: 1px solid;
+  max-height: 300px;
+  overflow: auto;
+  background-color: white;
+  z-index: 100;
+}
+
+.hide {
+  display: none;
+}
