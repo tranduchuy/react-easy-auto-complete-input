@@ -16,21 +16,22 @@ type SuggestListProps = {
     activeKey: string;
     filterBy: string | FilterByFn;
     formatSelectedItem: (item: StandardItem) => string;
-    renderItem?: () => JSX.Element;
-    onSelectItem?: () => string;
+    onSelect?: (item: AutoCompleteItem) => void;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AutoCompleteItem = any;
 
-export interface StandardItem<T = any> {
+export interface StandardItem<T = AutoCompleteItem> {
     id: string;
     selected: boolean;
     hovered: boolean;
     params: T;
 }
 
-type Props = {
+export type Props = {
     type: 'input' | 'textarea';
+    value?: string;
     items: AutoCompleteItem[];
     children: (item: StandardItem) => JSX.Element;
     onChanged?: (value: string) => void;
@@ -42,7 +43,7 @@ type Props = {
     InputProps &
     TextareaProps;
 
-type State = {
+export type State = {
     show: boolean;
     hoverOnIndex: number;
     filteredItems: StandardItem[];
@@ -57,14 +58,11 @@ const ENTER = 13;
 
 export const AC_CONTAINER_CLASSNAME = 'auto-complete-container';
 
-const ID = (): string => {
-    return '_' + Math.random().toString(36).substr(2, 9);
-};
-
 export class AutoComplete extends React.Component<Props, State> {
     public static defaultProps = {
         filterBy: 'name',
-        type: 'textarea'
+        type: 'textarea',
+        value: ''
     };
 
     slRefContainer: HTMLDivElement | null = null;
@@ -77,9 +75,9 @@ export class AutoComplete extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.standardItems = props.items.map((i) => {
+        this.standardItems = props.items.map((i, index) => {
             return {
-                id: ID(),
+                id: 'item_' + index.toString(),
                 selected: false,
                 hovered: false,
                 params: i
@@ -95,7 +93,28 @@ export class AutoComplete extends React.Component<Props, State> {
         this._checkContainerExist();
     }
 
-    private _checkContainerExist() {
+    componentDidMount(): void {
+        this._initInputValue(this.props.value || '');
+    }
+
+    componentDidUpdate(prevProps: Props): void {
+        if (prevProps.value !== this.props.value) {
+            this._initInputValue(this.props.value || '');
+        }
+    }
+
+    private _initInputValue(value: string): void {
+        const input: HTMLInputElement | HTMLTextAreaElement | null =
+            this.textareRef.current || this.inputRef.current;
+
+        if (!input) {
+            return;
+        }
+
+        input.value = value;
+    }
+
+    private _checkContainerExist(): void {
         let div = document.getElementById(
             AC_CONTAINER_CLASSNAME
         ) as HTMLDivElement;
@@ -109,8 +128,9 @@ export class AutoComplete extends React.Component<Props, State> {
         this.slRefContainer = div;
     }
 
-    private _showSuggestList() {
+    private _showSuggestList(): void {
         if (!this.slRef.current) {
+            console.log(-1);
             return;
         }
 
@@ -121,12 +141,12 @@ export class AutoComplete extends React.Component<Props, State> {
             return;
         }
 
-        this.caretCursorIndex = input.selectionEnd || -1;
-        if (this.caretCursorIndex === -1) {
+        if (input.selectionEnd === null) {
             console.warn('Caret position is -1');
             return;
         }
 
+        this.caretCursorIndex = input.selectionEnd;
         const bounding = input.getBoundingClientRect();
         const caretPosition = getCaretCoordinates(input, this.caretCursorIndex);
         this.slRef.current.style.opacity = '0';
@@ -142,7 +162,6 @@ export class AutoComplete extends React.Component<Props, State> {
                 show: true
             },
             () => {
-                console.log(this.state.hoverOnIndex);
                 if (this.slRef.current) {
                     this.slRef.current.style.opacity = '1';
                 }
@@ -150,7 +169,7 @@ export class AutoComplete extends React.Component<Props, State> {
         );
     }
 
-    private _hideSuggestList() {
+    private _hideSuggestList(): void {
         this.caretCursorIndex = -1;
         this.setState({
             show: false,
@@ -159,7 +178,7 @@ export class AutoComplete extends React.Component<Props, State> {
         });
     }
 
-    private _moveUp() {
+    private _moveUp(): void {
         this.setState((prevState) => {
             const hoverOnIndex =
                 prevState.hoverOnIndex > 0 ? prevState.hoverOnIndex - 1 : 0;
@@ -176,7 +195,7 @@ export class AutoComplete extends React.Component<Props, State> {
         });
     }
 
-    private _moveDown() {
+    private _moveDown(): void {
         const { filteredItems } = this.state;
         const maxIndex = filteredItems.length - 1;
         this.setState((prevState) => {
@@ -197,7 +216,7 @@ export class AutoComplete extends React.Component<Props, State> {
         });
     }
 
-    private _selectOnPressEnter() {
+    private _selectOnPressEnter(): void {
         const { hoverOnIndex, filteredItems } = this.state;
         const input: HTMLInputElement | HTMLTextAreaElement | null =
             this.textareRef.current || this.inputRef.current;
@@ -210,15 +229,23 @@ export class AutoComplete extends React.Component<Props, State> {
         if (!selectedItem) {
             return;
         }
+
+        if (this.props.onSelect) {
+            this.props.onSelect(selectedItem.params);
+        }
+
         input.value =
             input.value.slice(0, this.caretCursorIndex - 1) +
             this.props.formatSelectedItem(selectedItem) +
             input.value.slice(input.selectionEnd);
+        if (this.props.onChanged) {
+            this.props.onChanged(input.value);
+        }
 
         this._hideSuggestList();
     }
 
-    private _selectOnClick(selectedItem: StandardItem) {
+    private _selectOnClick(selectedItem: StandardItem): void {
         const input: HTMLInputElement | HTMLTextAreaElement | null =
             this.textareRef.current || this.inputRef.current;
 
@@ -226,10 +253,17 @@ export class AutoComplete extends React.Component<Props, State> {
             return;
         }
 
+        if (this.props.onSelect) {
+            this.props.onSelect(selectedItem.params);
+        }
+
         input.value =
             input.value.slice(0, this.caretCursorIndex - 1) +
             this.props.formatSelectedItem(selectedItem) +
             input.value.slice(input.selectionEnd);
+        if (this.props.onChanged) {
+            this.props.onChanged(input.value);
+        }
 
         this._hideSuggestList();
     }
@@ -277,7 +311,7 @@ export class AutoComplete extends React.Component<Props, State> {
 
     private _onKeyUp = (
         event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
-    ) => {
+    ): void => {
         if (this.props.activeKey === event.key) {
             this._showSuggestList();
             return;
@@ -317,7 +351,6 @@ export class AutoComplete extends React.Component<Props, State> {
             default:
                 if (show) {
                     const text = this._getJustInputedChars();
-                    console.log(text);
                     if (text === '') {
                         this._hideSuggestList();
                     } else {
@@ -340,7 +373,7 @@ export class AutoComplete extends React.Component<Props, State> {
 
     private _onKeyDown = (
         event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
-    ) => {
+    ): void => {
         const { show } = this.state;
         console.log('down', event.which);
         switch (event.which) {
@@ -356,6 +389,14 @@ export class AutoComplete extends React.Component<Props, State> {
                     this._moveDown();
                 }
                 break;
+        }
+    };
+
+    private _onChange = (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ): void => {
+        if (this.props.onChanged) {
+            this.props.onChanged(event.currentTarget.value);
         }
     };
 
@@ -380,6 +421,7 @@ export class AutoComplete extends React.Component<Props, State> {
                         className={className}
                         onKeyUp={this._onKeyUp}
                         onKeyDown={this._onKeyDown}
+                        onChange={this._onChange}
                     />
                 ) : (
                     <textarea
@@ -390,6 +432,7 @@ export class AutoComplete extends React.Component<Props, State> {
                         cols={cols}
                         onKeyUp={this._onKeyUp}
                         onKeyDown={this._onKeyDown}
+                        onChange={this._onChange}
                     />
                 )}
 
@@ -397,9 +440,9 @@ export class AutoComplete extends React.Component<Props, State> {
                     ReactDOM.createPortal(
                         <div
                             ref={this.slRef}
-                            className={`${dropdownClass || ''} ${styles.wrap} ${
-                                !show ? styles.hide : ''
-                            }`}
+                            className={`ac-wrap ${dropdownClass || ''} ${
+                                styles.wrap
+                            } ${!show ? styles.hide : ''}`}
                         >
                             {filteredItems.map((i) => {
                                 return (

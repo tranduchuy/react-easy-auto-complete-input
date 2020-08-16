@@ -1,0 +1,273 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AutoComplete Input is truthy 1`] = `
+<AutoComplete
+  activeKey="["
+  filterBy="name"
+  formatSelectedItem={[Function]}
+  items={
+    Array [
+      Object {
+        "name": "US",
+      },
+      Object {
+        "name": "England",
+      },
+      Object {
+        "name": "Germany",
+      },
+    ]
+  }
+  type="textarea"
+  value=""
+>
+  <textarea
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+  />
+  <Portal
+    containerInfo={
+      <div
+        id="auto-complete-container"
+      >
+        <div
+          class="ac-wrap  wrap hide"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+        <div
+          class="ac-wrap  wrap hide"
+        />
+        <div
+          class="ac-wrap  wrap hide"
+        />
+        <div
+          class="ac-wrap  wrap "
+          style="opacity: 1; top: 19px; left: 1px;"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+        <div
+          class="ac-wrap  wrap hide"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+        <div
+          class="ac-wrap  wrap hide"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+        <div
+          class="ac-wrap  wrap hide"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+        <div
+          class="ac-wrap  wrap hide"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  >
+    <div
+      className="ac-wrap  wrap hide"
+    >
+      <div
+        key="item_0"
+        onClick={[Function]}
+      >
+        <div>
+          US
+        </div>
+      </div>
+      <div
+        key="item_1"
+        onClick={[Function]}
+      >
+        <div>
+          England
+        </div>
+      </div>
+      <div
+        key="item_2"
+        onClick={[Function]}
+      >
+        <div>
+          Germany
+        </div>
+      </div>
+    </div>
+  </Portal>
+</AutoComplete>
+`;
+
+exports[`AutoComplete Textarea is truthy 1`] = `
+<AutoComplete
+  activeKey="["
+  filterBy="name"
+  formatSelectedItem={[Function]}
+  items={
+    Array [
+      Object {
+        "name": "US",
+      },
+      Object {
+        "name": "England",
+      },
+      Object {
+        "name": "Germany",
+      },
+    ]
+  }
+  type="textarea"
+  value=""
+>
+  <textarea
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+  />
+  <Portal
+    containerInfo={
+      <div
+        id="auto-complete-container"
+      >
+        <div
+          class="ac-wrap  wrap hide"
+        >
+          <div>
+            <div>
+              US
+            </div>
+          </div>
+          <div>
+            <div>
+              England
+            </div>
+          </div>
+          <div>
+            <div>
+              Germany
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  >
+    <div
+      className="ac-wrap  wrap hide"
+    >
+      <div
+        key="item_0"
+        onClick={[Function]}
+      >
+        <div>
+          US
+        </div>
+      </div>
+      <div
+        key="item_1"
+        onClick={[Function]}
+      >
+        <div>
+          England
+        </div>
+      </div>
+      <div
+        key="item_2"
+        onClick={[Function]}
+      >
+        <div>
+          Germany
+        </div>
+      </div>
+    </div>
+  </Portal>
+</AutoComplete>
+`;
