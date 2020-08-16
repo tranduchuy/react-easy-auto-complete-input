@@ -2,7 +2,10 @@
   "name": "react-easy-auto-complete-input",
   "version": "1.0.0",
   "description": "Easy to create an input with suggest list. Can use on input text or textarea",
-  "author": "huytd",
+  "author": {
+    "name": "HuyTD",
+    "email": "thewish.it@gmail.com"
+  },
   "license": "MIT",
   "repository": "tranduchuy/react-easy-auto-complete-input",
   "main": "dist/index.js",
