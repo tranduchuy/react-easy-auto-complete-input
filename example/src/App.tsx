@@ -14,7 +14,7 @@ const App = () => {
         <div style={{padding: '20px'}}>
             <AutoComplete
                 style={{ lineHeight: '22px' }}
-                activeKey='@'
+                activeKey='a'
                 filterBy='Name'
                 rows={10}
                 cols={100}
@@ -25,7 +25,7 @@ const App = () => {
                 (item: StandardItem<Country>) => {
                   return (
                     <div className={`item ${item.hovered ? 'hovered': ''}`}>
-                      <div>
+                      <div className='item-name'>
                       {item.params.Name}
                       </div>
                       <div className='item-code'>

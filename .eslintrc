@@ -25,6 +25,7 @@
   },
   "rules": {
     "semi": [2, "always"],
+    "max-len": ["error", {"code": 120}],
     "space-before-function-paren": 0,
     "react/prop-types": 0,
     "react/jsx-handler-names": 0,

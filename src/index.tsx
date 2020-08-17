@@ -53,7 +53,6 @@ const KEY_DOWN = 40;
 const ESC = 27;
 const SHIFT = 16;
 const ENTER = 13;
-// const BACK_SPACE = 8;
 
 export const AC_CONTAINER_CLASSNAME = 'auto-complete-container';
 
@@ -62,7 +61,7 @@ export class AutoComplete extends React.Component<Props, State> {
         filterBy: 'name',
         type: 'textarea',
         value: '',
-        multiChoice: true
+        multiChoice: true,
     };
 
     slRefContainer: HTMLDivElement | null = null;
@@ -80,14 +79,14 @@ export class AutoComplete extends React.Component<Props, State> {
                 id: 'item_' + index.toString(),
                 selected: false,
                 hovered: false,
-                params: i
+                params: i,
             };
         });
 
         this.state = {
             show: false,
             hoverOnIndex: -1,
-            filteredItems: this.standardItems
+            filteredItems: this.standardItems,
         };
 
         this._checkContainerExist();
@@ -104,8 +103,7 @@ export class AutoComplete extends React.Component<Props, State> {
     }
 
     private _initInputValue(value: string): void {
-        const input: HTMLInputElement | HTMLTextAreaElement | null =
-            this.textareRef.current || this.inputRef.current;
+        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
 
         if (!input) {
             return;
@@ -115,9 +113,7 @@ export class AutoComplete extends React.Component<Props, State> {
     }
 
     private _checkContainerExist(): void {
-        let div = document.getElementById(
-            AC_CONTAINER_CLASSNAME
-        ) as HTMLDivElement;
+        let div = document.getElementById(AC_CONTAINER_CLASSNAME) as HTMLDivElement;
 
         if (div === null) {
             div = document.createElement('div');
@@ -128,14 +124,13 @@ export class AutoComplete extends React.Component<Props, State> {
         this.slRefContainer = div;
     }
 
-    private _showSuggestList(): void {
+    private _optimizePosition = (): void => {
         if (!this.slRef.current) {
             console.log(-1);
             return;
         }
 
-        const input: HTMLInputElement | HTMLTextAreaElement | null =
-            this.textareRef.current || this.inputRef.current;
+        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
 
         if (!input) {
             return;
@@ -149,23 +144,35 @@ export class AutoComplete extends React.Component<Props, State> {
         this.caretCursorIndex = input.selectionEnd;
         const bounding = input.getBoundingClientRect();
         const caretPosition = getCaretCoordinates(input, this.caretCursorIndex);
+        let newTop = bounding.top + caretPosition.top + (caretPosition.height || 18);
+        let newLeft = bounding.left + caretPosition.left;
         this.slRef.current.style.opacity = '0';
-        this.slRef.current.style.top = `${
-            bounding.top + caretPosition.top + (caretPosition.height || 18)
-        }px`;
-        this.slRef.current.style.left = `${
-            bounding.left + caretPosition.left
-        }px`;
 
+        // detect direction by window height and width
+
+        if (newLeft + this.slRef.current.offsetWidth > window.innerWidth) {
+            newLeft = window.innerWidth - this.slRef.current.offsetWidth;
+        }
+
+        // console.log(caretPosition.top)
+        if (newTop + this.slRef.current.offsetHeight > window.innerHeight) {
+            newTop = bounding.top + caretPosition.top - 5 - this.slRef.current.offsetHeight;
+        }
+
+        this.slRef.current.style.top = `${newTop}px`;
+        this.slRef.current.style.left = `${newLeft}px`;
+
+        if (this.slRef.current) {
+            this.slRef.current.style.opacity = '1';
+        }
+    };
+
+    private _showSuggestList(): void {
         this.setState(
             {
-                show: true
+                show: true,
             },
-            () => {
-                if (this.slRef.current) {
-                    this.slRef.current.style.opacity = '1';
-                }
-            }
+            this._optimizePosition
         );
     }
 
@@ -174,14 +181,13 @@ export class AutoComplete extends React.Component<Props, State> {
         this.setState({
             show: false,
             filteredItems: JSON.parse(JSON.stringify(this.standardItems)),
-            hoverOnIndex: -1
+            hoverOnIndex: -1,
         });
     }
 
     private _moveUp(): void {
         this.setState((prevState) => {
-            const hoverOnIndex =
-                prevState.hoverOnIndex > 0 ? prevState.hoverOnIndex - 1 : 0;
+            const hoverOnIndex = prevState.hoverOnIndex > 0 ? prevState.hoverOnIndex - 1 : 0;
             return {
                 ...prevState,
                 hoverOnIndex,
@@ -190,7 +196,7 @@ export class AutoComplete extends React.Component<Props, State> {
                     .map((i, index) => {
                         i.hovered = hoverOnIndex === index;
                         return i;
-                    })
+                    }),
             };
         });
     }
@@ -199,10 +205,7 @@ export class AutoComplete extends React.Component<Props, State> {
         const { filteredItems } = this.state;
         const maxIndex = filteredItems.length - 1;
         this.setState((prevState) => {
-            const hoverOnIndex =
-                prevState.hoverOnIndex < maxIndex
-                    ? prevState.hoverOnIndex + 1
-                    : maxIndex;
+            const hoverOnIndex = prevState.hoverOnIndex < maxIndex ? prevState.hoverOnIndex + 1 : maxIndex;
             return {
                 ...prevState,
                 hoverOnIndex,
@@ -211,15 +214,14 @@ export class AutoComplete extends React.Component<Props, State> {
                     .map((i, index) => {
                         i.hovered = hoverOnIndex === index;
                         return i;
-                    })
+                    }),
             };
         });
     }
 
     private _selectOnPressEnter(): void {
         const { hoverOnIndex, filteredItems } = this.state;
-        const input: HTMLInputElement | HTMLTextAreaElement | null =
-            this.textareRef.current || this.inputRef.current;
+        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
 
         if (!input || input.selectionEnd === null) {
             return;
@@ -246,8 +248,7 @@ export class AutoComplete extends React.Component<Props, State> {
     }
 
     private _selectOnClick(selectedItem: StandardItem): void {
-        const input: HTMLInputElement | HTMLTextAreaElement | null =
-            this.textareRef.current || this.inputRef.current;
+        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
 
         if (!input || input.selectionEnd === null) {
             return;
@@ -272,13 +273,7 @@ export class AutoComplete extends React.Component<Props, State> {
         const { filterBy } = this.props;
         if (typeof filterBy === 'string') {
             return this.standardItems
-                .filter(
-                    (i) =>
-                        i.params[filterBy]
-                            .toString()
-                            .toLowerCase()
-                            .indexOf(txt) > -1
-                )
+                .filter((i) => i.params[filterBy].toString().toLowerCase().indexOf(txt) > -1)
                 .map((i) => JSON.parse(JSON.stringify(i)))
                 .map((i) => {
                     i.hovered = false;
@@ -296,8 +291,7 @@ export class AutoComplete extends React.Component<Props, State> {
     }
 
     private _getJustInputedChars(): string {
-        const input: HTMLInputElement | HTMLTextAreaElement | null =
-            this.textareRef.current || this.inputRef.current;
+        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
 
         if (!input || input.selectionEnd === null) {
             return '';
@@ -309,9 +303,7 @@ export class AutoComplete extends React.Component<Props, State> {
         return input.value.slice(start - 1, end);
     }
 
-    private _onKeyUp = (
-        event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
-    ): void => {
+    private _onKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         if (this.props.activeKey === event.key) {
             this._showSuggestList();
             return;
@@ -355,15 +347,13 @@ export class AutoComplete extends React.Component<Props, State> {
                         this._hideSuggestList();
                     } else {
                         // TODO: re filter items
-                        const newFilteredList = this._filter(
-                            text.slice(1).toLowerCase()
-                        );
+                        const newFilteredList = this._filter(text.slice(1).toLowerCase());
                         if (newFilteredList.length > 0) {
                             newFilteredList[0].hovered = true;
                         }
                         this.setState({
                             filteredItems: newFilteredList,
-                            hoverOnIndex: 0
+                            hoverOnIndex: 0,
                         });
                     }
                 }
@@ -371,9 +361,7 @@ export class AutoComplete extends React.Component<Props, State> {
         }
     };
 
-    private _onKeyDown = (
-        event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
-    ): void => {
+    private _onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         const { show } = this.state;
         console.log('down', event.which);
         switch (event.which) {
@@ -392,24 +380,14 @@ export class AutoComplete extends React.Component<Props, State> {
         }
     };
 
-    private _onChange = (
-        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-    ): void => {
+    private _onChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         if (this.props.onChanged) {
             this.props.onChanged(event.currentTarget.value);
         }
     };
 
     render(): JSX.Element {
-        const {
-            type,
-            className,
-            dropdownClass,
-            cols,
-            rows,
-            style,
-            children
-        } = this.props;
+        const { type, className, dropdownClass, cols, rows, style, children } = this.props;
         const { show, filteredItems } = this.state;
         return (
             <React.Fragment>
@@ -417,7 +395,7 @@ export class AutoComplete extends React.Component<Props, State> {
                     <input
                         style={style}
                         ref={this.inputRef}
-                        type='text'
+                        type="text"
                         className={className}
                         onKeyUp={this._onKeyUp}
                         onKeyDown={this._onKeyDown}
@@ -440,18 +418,11 @@ export class AutoComplete extends React.Component<Props, State> {
                     ReactDOM.createPortal(
                         <div
                             ref={this.slRef}
-                            className={`ac-wrap ${dropdownClass || ''} ${
-                                styles.wrap
-                            } ${!show ? styles.hide : ''}`}
+                            className={`ac-wrap ${dropdownClass || ''} ${styles.wrap} ${!show ? styles.hide : ''}`}
                         >
                             {filteredItems.map((i) => {
                                 return (
-                                    <div
-                                        key={i.id}
-                                        onClick={(): void =>
-                                            this._selectOnClick(i)
-                                        }
-                                    >
+                                    <div key={i.id} onClick={(): void => this._selectOnClick(i)}>
                                         {children(i)}
                                     </div>
                                 );
