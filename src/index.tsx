@@ -94,6 +94,7 @@ export class AutoComplete extends React.Component<Props, State> {
 
     componentDidMount(): void {
         this._initInputValue(this.props.value || '');
+        window.addEventListener('click', this._handleClickOutSideInput);
     }
 
     componentDidUpdate(prevProps: Props): void {
@@ -102,8 +103,41 @@ export class AutoComplete extends React.Component<Props, State> {
         }
     }
 
+    componentWillUnmount(): void {
+        window.removeEventListener('click', this._handleClickOutSideInput);
+    }
+
+    private _getInputRef = (): HTMLInputElement | HTMLTextAreaElement | null => {
+        return this.textareRef.current || this.inputRef.current;
+    };
+
+    private _handleClickOutSideInput = (event: Event): void => {
+        const { show } = this.state;
+        if (!show) {
+            return;
+        }
+
+        const input = this._getInputRef();
+        if (!input) {
+            return;
+        }
+
+        let canNotHide = false;
+        if (input.contains(event.target as Node)) {
+            canNotHide = true;
+        }
+
+        if (this.slRef.current?.contains(event.target as Node)) {
+            canNotHide = true;
+        }
+
+        if (!canNotHide) {
+            this._hideSuggestList();
+        }
+    };
+
     private _initInputValue(value: string): void {
-        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
+        const input = this._getInputRef();
 
         if (!input) {
             return;
@@ -130,7 +164,7 @@ export class AutoComplete extends React.Component<Props, State> {
             return;
         }
 
-        const input: HTMLInputElement | HTMLTextAreaElement | null = this.textareRef.current || this.inputRef.current;
+        const input = this._getInputRef();
 
         if (!input) {
             return;

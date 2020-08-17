@@ -14,7 +14,7 @@ const App = () => {
         <div style={{padding: '20px'}}>
             <AutoComplete
                 style={{ lineHeight: '22px' }}
-                activeKey='a'
+                activeKey='@'
                 filterBy='Name'
                 rows={10}
                 cols={100}
