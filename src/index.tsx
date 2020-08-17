@@ -38,7 +38,6 @@ export type Props = {
     className?: string;
     style?: React.CSSProperties;
     dropdownClass?: string;
-    lineHeight?: number;
 } & SuggestListProps &
     InputProps &
     TextareaProps;
@@ -62,7 +61,8 @@ export class AutoComplete extends React.Component<Props, State> {
     public static defaultProps = {
         filterBy: 'name',
         type: 'textarea',
-        value: ''
+        value: '',
+        multiChoice: true
     };
 
     slRefContainer: HTMLDivElement | null = null;

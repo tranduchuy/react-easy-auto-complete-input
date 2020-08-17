@@ -7,7 +7,7 @@
     "email": "thewish.it@gmail.com"
   },
   "license": "MIT",
-  "repository": "tranduchuy/react-easy-auto-complete-input",
+  "repository": "https://github.com/tranduchuy/react-easy-auto-complete-input",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
