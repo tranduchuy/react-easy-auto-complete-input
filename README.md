@@ -4,10 +4,22 @@
 
 [![NPM](https://img.shields.io/npm/v/react-easy-auto-complete-input.svg)](https://www.npmjs.com/package/react-easy-auto-complete-input) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-## Install
+## Features:
+- Support typescript
+- All style can be customed via `children`, `className`, `style`
+- Show list by any key
+- Support filter items
+- Note: It's important to set lineHeight to style because of the position of suggest list base on this.
 
+## Install
+Use npm:
 ```bash
 npm install --save react-easy-auto-complete-input
+```
+
+Use yarn:
+```bash
+yarn add react-easy-auto-complete-input
 ```
 
 ## Test
@@ -87,7 +99,7 @@ class Example extends Component {
 }
 ```
 
-## Images Result
+## Result images:
 Trigger showwing  suggest list by '@':
 ![trigger-showing-suggest-list](/assets/trigger-showing-suggest-list.png)
 
@@ -109,17 +121,16 @@ cd example && npm install && npm start
 WIP
 |  # |  Name | Type | Required | Default | Description
 |---|---|---|---|---|---|
-| 1 | <span style="color: red">type</span> | string | false | ```textarea``` | Type of element textare or input
-| 2 | <span style="color: red">activeKey</span> | string | true | null | When press this key, the suggest list will appear
-| 3 | <span style="color: red">filterBy</span> | string or <br /> ```(item: StandardItem<AutoCompleteItem>) => boolean``` | true | ```name``` | Use to filter suggest list, cannot be a field of item or a custom fucntion
-| 4 | <span style="color: red">items</span> | object | true | | suggested items
-| 5 | <span style="color: red">formatSelectedItem</span> | ```(item: StandardItem<AutoCompleteItem>) => string``` | true | | Used to format selected item
-| 6 | <span style="color: red">value</span> | string | false | ```""``` | Init value of textarea or input
-| 7 | <span style="color: red">onChanged</span> | ```(value: string) => void``` | false | | Invoked when value change by input from keyboard or select item
-| 8 | <span style="color: red">onSelect</span> | ```(item: AutoCompleteItem) => void``` | false | | Invoked when item is selected
-| 9 | <span style="color: red">className</span> | string | false | | Custom classNames for textarea or input
-| 10 | <span style="color: red">style</span> | object | false | | Custom style for textarea or input
-
+| 1 | <span style="color: #a71d5d">type</span> | string | false | ```textarea``` | Type of element textare or input
+| 2 | <span style="color: #a71d5d">activeKey</span> | string | true | null | When press this key, the suggest list will appear
+| 3 | <span style="color: #a71d5d">filterBy</span> | string or <br /> ```(item: StandardItem<AutoCompleteItem>) => boolean``` | true | ```name``` | Use to filter suggest list, cannot be a field of item or a custom fucntion
+| 4 | <span style="color: #a71d5d">items</span> | object | true | | suggested items
+| 5 | <span style="color: #a71d5d">formatSelectedItem</span> | ```(item: StandardItem<AutoCompleteItem>) => string``` | true | | Used to format selected item
+| 6 | <span style="color: #a71d5d">value</span> | string | false | ```""``` | Init value of textarea or input
+| 7 | <span style="color: #a71d5d">onChanged</span> | ```(value: string) => void``` | false | | Invoked when value change by input from keyboard or select item
+| 8 | <span style="color: #a71d5d">onSelect</span> | ```(item: AutoCompleteItem) => void``` | false | | Invoked when item is selected
+| 9 | <span style="color: #a71d5d">className</span> | string | false | | Custom classNames for textarea or input
+| 10 | <span style="color: #a71d5d">style</span> | object | false | | Custom style for textarea or input
 
 ## License
 
